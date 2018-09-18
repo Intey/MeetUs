@@ -1,0 +1,13 @@
+@import '../../styles/mixins';
+
+.meeter-time-range-picker {
+  margin: 1em;
+  
+  .input {
+    width: 400px;
+    height: 40px;
+  }
+  canvas {
+    border: 1px solid green;
+  }
+}
