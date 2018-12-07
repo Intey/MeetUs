@@ -4,15 +4,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 
-import { rect, getMousePos } from './canvas';
-import { initTime, deltaTime, Time } from './time';
+import { rect, getMousePos, onMouseMove } from './canvas';
+import { initTime, deltaTime, Time, timeParts } from './time';
 
 export class TimeRangePicker extends Component {
   static propTypes = {
     meeter: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    begin: PropTypes.instanceOf(Date),
-    end: PropTypes.instanceOf(Date),
+    begin: PropTypes.instanceOf(Time),
+    end: PropTypes.instanceOf(Time),
   };
 
   constructor(props) {
@@ -25,16 +25,19 @@ export class TimeRangePicker extends Component {
       end = initTime(24);
     }
 
+    
+
+    let parts = timeParts(deltaTime(begin, end), initTime(0, 30))
     this.state = {
-      begin: new Time(9),
-      end: new Time(11),
+      rangeBegin: begin,
+      rangeEnd: end,
+      begin: initTime(9),
+      end: initTime(11),
+      step: initTime(0, 30),
+      parts: parts
     };
-    this.begin = begin;
-    this.end = end;
     this.width = 1000;
     this.height = 50;
-    this.parts = deltaTime(begin, end).getHours() * 2;
-    this.step = new Time(0, 30)
   }
 
   // returns near guide to given time
@@ -55,16 +58,17 @@ export class TimeRangePicker extends Component {
 
   getNearGuideToX = x => {
     // x = i * padStep + 6; i = x/padStep - 6
-    const padStep = Math.floor(this.width / this.parts);
+    const padStep = Math.floor(this.width / this.state.parts);
     const i = Math.round(x / padStep);
     return i;
   };
 
   getGuideX = i => {
-    const padStep = Math.floor((this.width - 6) / this.parts);
+    const padStep = Math.floor((this.width - 6) / this.state.parts);
     console.log('getGuideX', padStep);
     return i * padStep + 6;
   };
+
   renderHourGuide = i => {
     let ctx = this.refs.canvas.getContext('2d');
     const x = this.getGuideX(i);
@@ -80,7 +84,7 @@ export class TimeRangePicker extends Component {
     rect({ ctx, x: 0, y: 0, width: this.width, height: this.height });
     ctx.font = '14px sans';
     // const dt = deltaTime(this.state.start, this.state.end)
-    for (let i = 0; i < this.parts; i++) {
+    for (let i = 0; i < this.state.parts; i++) {
       const x = this.renderHourGuide(i);
     }
     this.drawRange(this.state.begin, this.state.end);
@@ -89,24 +93,28 @@ export class TimeRangePicker extends Component {
   componentDidMount() {
     this.updateCanvas();
     let canvas = this.refs.canvas;
-
+    let mouseMoveListener = (e) => onMouseMove(this.refs.canvas, e)
     // find guide, change time range
     // Search for near to x bound of range. if bound far enought then noise,
     // then move bound to near guide of x
     canvas.addEventListener('mousedown', e => {
-      const { x, y } = getMousePos(canvas, e);
-      console.log(x, y);
-      const guide = this.getNearGuideToX(x);
-      const startGuide = this.timeGuide(this.state.begin);
-      const endGuide = this.timeGuide(this.state.end);
-      const time = new Time(guide);
+      // extract all before setState to canvas.js. 
+      const { x, y } = getMousePos(canvas, e)
+      const guide = this.getNearGuideToX(x)
+      const startGuide = this.timeGuide(this.state.begin)
+      const endGuide = this.timeGuide(this.state.end)
+      const time = initTime(guide)
       console.log(time);
       if (Math.abs(startGuide - guide) < Math.abs(endGuide - guide)) {
-        this.setState({ begin: time });
+        this.setState({ begin: time })
       } else {
-        this.setState({ end: time });
+        this.setState({ end: time })
       }
+      canvas.addEventListener('mousemove', mouseMoveListener)
     });
+    canvas.addEventListener('mouseup', e => {
+      canvas.removeEventListener('mousemove', mouseMoveListener)
+    })
   }
 
   componentDidUpdate() {

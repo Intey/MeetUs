@@ -2,7 +2,6 @@ import { App } from '../features/home';
 import { PageNotFound } from '../features/common';
 import homeRoute from '../features/home/route';
 import commonRoute from '../features/common/route';
-import examplesRoute from '../features/examples/route';
 import _ from 'lodash';
 import meeterRoute from '../features/meeter/route';
 
@@ -11,7 +10,6 @@ import meeterRoute from '../features/meeter/route';
 const childRoutes = [
   homeRoute,
   commonRoute,
-  examplesRoute,
   meeterRoute,
 ];
 

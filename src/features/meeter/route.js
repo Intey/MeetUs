@@ -9,6 +9,6 @@ export default {
   path: 'meeter',
   name: 'Meeter',
   childRoutes: [
-    { path: 'default-page', name: 'Default page', component: DefaultPage, isIndex: true },
+    { path: '', name: 'Default page', component: DefaultPage, isIndex: true },
   ],
 };
