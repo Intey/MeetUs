@@ -39,11 +39,12 @@ export class TimeRangePicker extends Component {
     };
     this.width = 1000;
     this.height = 50;
+    this.fontSize = 14;
   }
 
   // returns near guide to given time
   timeGuide = time => {
-    return time.getHours();
+    return this.clock.getPartByTime(time);
   };
 
   getNearGuideToX = x => {
@@ -59,11 +60,10 @@ export class TimeRangePicker extends Component {
   };
 
   renderHourGuide = (x, timeString) => {
-    const FONT_SIZE = 14;
     let ctx = this.refs.canvas.getContext('2d');
-    let txtOffset = 1.3 * FONT_SIZE;
+    let txtOffset = 1.3 * this.fontSize;
     rect({ ctx, x: x, y: 16, width: 2, height: this.height - 16, color: 'black' });
-    ctx.fillText(timeString, x - txtOffset, FONT_SIZE);
+    ctx.fillText(timeString, x - txtOffset, this.fontSize);
     return x;
   };
 
@@ -106,7 +106,8 @@ export class TimeRangePicker extends Component {
       const guide = this.getNearGuideToX(x);
       const startGuide = this.timeGuide(this.state.begin);
       const endGuide = this.timeGuide(this.state.end);
-      const time = initTime(guide);
+
+      const time = this.clock.getTimeByPart(guide);
       if (Math.abs(startGuide - guide) < Math.abs(endGuide - guide)) {
         this.setState({ begin: time });
       } else {

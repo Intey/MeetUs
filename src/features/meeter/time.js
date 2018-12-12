@@ -101,7 +101,7 @@ export class TimeClock {
   }
 
   getPartByTime = (time) => {
-    return timeParts(deltaTime(this.start, time))
+    return timeParts(deltaTime(this.start, time), this.step)
   }
 
 }
