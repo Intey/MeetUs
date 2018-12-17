@@ -4,40 +4,33 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 
-import { rect, getMousePos, onMouseMove } from './canvas';
-import { initTime, deltaTime, Time, timeParts, TimeClock } from './time';
+import { rect, getMousePos } from './canvas';
+import { initTime, Time, TimeClock } from './time';
 
 /**
  * begin - selected range start
  * end - selected range end
  */
+const RangeShape = PropTypes.shape({
+  begin: PropTypes.instanceOf(Time).isRequired,
+  end: PropTypes.instanceOf(Time).isRequired,
+});
+
 export class TimeRangePicker extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
-    begin: PropTypes.instanceOf(Time),
-    end: PropTypes.instanceOf(Time),
+    range: RangeShape.isRequired,
   };
 
   constructor(props) {
     super(props);
-    let { begin, end } = props;
-    if (!begin) {
-      begin = initTime(0);
-    }
-    if (!end) {
-      end = initTime(24);
-    }
 
-    let startTime = initTime(9);
-    let endTime = initTime(18);
-    let stepTime = initTime(0, 30);
-    this.clock = new TimeClock(startTime, endTime, stepTime);
-
-    this.state = {
-      begin: startTime,
-      end: endTime,
-    };
-    this.width = 1000;
+    let begin = initTime(6);
+    let end = initTime(24);
+    let stepTime = initTime(1);
+    this.clock = new TimeClock(begin, end, stepTime);
+    
+    this.width = 50 * this.clock.length;
     this.height = 50;
     this.fontSize = 14;
   }
@@ -74,45 +67,46 @@ export class TimeRangePicker extends Component {
     const endGuide = this.timeGuide(end);
     const x1 = this.getGuideX(startGuide);
     const width = this.getGuideX(endGuide) - x1;
-    console.log('draw range', begin.toString(), end.toString(), width, startGuide, endGuide);
     rect({ ctx: ctx, x: x1, y: 20, width: width, height: 20, color: 'blue' });
   };
-
 
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d');
     rect({ ctx, x: 0, y: 0, width: this.width, height: this.height });
     ctx.font = '14px sans';
-    // const dt = deltaTime(this.state.start, this.state.end)
+    // const dt = deltaTime(this.props.range.start, this.props.range.end)
     for (let i = 0; i < this.clock.length; i++) {
       const timeStr = this.clock.getTimeByPart(i).toString();
       const x = this.getGuideX(i);
       this.renderHourGuide(x, timeStr);
     }
-    console.log("draw range for", this.state.begin.toString(), this.state.end.toString())
-    this.drawRange(this.state.begin, this.state.end);
+    console.log('draw   range for', this.props.range.begin.toString(), this.props.range.end.toString());
+    this.drawRange(this.props.range.begin, this.props.range.end);
   }
 
   componentDidMount() {
     this.updateCanvas();
     let canvas = this.refs.canvas;
-    let mouseMoveListener = e => onMouseMove(this.refs.canvas, e);
+    // let mouseMoveListener = e => onMouseMove(this.refs.canvas, e);
     // find guide, change time range
     // Search for near to x bound of range. if bound far enought then noise,
     // then move bound to near guide of x
-    canvas.addEventListener('mousedown', e => {
+    canvas.addEventListener('mouseup', e => {
       // extract all before setState to canvas.js.
-      const { x, y } = getMousePos(canvas, e);
+      const { x } = getMousePos(canvas, e);
       const guide = this.getNearGuideToX(x);
-      const startGuide = this.timeGuide(this.state.begin);
-      const endGuide = this.timeGuide(this.state.end);
-
+      const startGuide = this.timeGuide(this.props.range.begin);
+      const endGuide = this.timeGuide(this.props.range.end);
       const time = this.clock.getTimeByPart(guide);
+      let {begin, end} = this.props.range;
+      
       if (Math.abs(startGuide - guide) < Math.abs(endGuide - guide)) {
-        this.setState({ begin: time });
+        begin = time;
       } else {
-        this.setState({ end: time });
+        end = time;
       }
+      this.props.actions.rangeUpdate({ begin, end });
+      
       // canvas.addEventListener('mousemove', mouseMoveListener);
     });
     // canvas.addEventListener('mouseup', e => {
@@ -134,8 +128,11 @@ export class TimeRangePicker extends Component {
 }
 
 /* istanbul ignore next */
-function mapStateToProps(state) {
-  return {};
+function mapStateToProps({ meeter: state }) {
+  console.log('map', state);
+  const { day=1, dayRanges = {} } = state;
+  if (dayRanges[day] === undefined) return { range: { begin: new Time(18), end: new Time(23) } };
+  else return { range: dayRanges[day] };
 }
 
 /* istanbul ignore next */

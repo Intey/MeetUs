@@ -12,7 +12,7 @@ export function getMousePos(canvas, e) {
 }
 
 
-export function onMouseMove(canvas, e) {
-  const { x, y } = getMousePos(canvas, e)
+// export function onMouseMove(canvas, e) {
+//   const { x, y } = getMousePos(canvas, e)
   
-}
+// }

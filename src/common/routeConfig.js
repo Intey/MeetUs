@@ -1,6 +1,6 @@
 import { App } from '../features/home';
 import { PageNotFound } from '../features/common';
-import homeRoute from '../features/home/route';
+// import homeRoute from '../features/home/route';
 import commonRoute from '../features/common/route';
 import _ from 'lodash';
 import meeterRoute from '../features/meeter/route';
@@ -8,9 +8,10 @@ import meeterRoute from '../features/meeter/route';
 // NOTE: DO NOT CHANGE the 'childRoutes' name and the declaration pattern.
 // This is used for Rekit cmds to register routes config for new features, and remove config when remove features, etc.
 const childRoutes = [
-  homeRoute,
+  // homeRoute,
   commonRoute,
   meeterRoute,
+  // {...meeterRoute, path: ''}, // push meeter to index page
 ];
 
 const routes = [{

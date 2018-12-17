@@ -95,7 +95,7 @@ export class TimeClock {
    */
   getTimeByPart = (i) => {
     let part = i
-    if (part > this.length) throw "Out of range"
+    if (part > this.length) throw new Error("Out of range")
     let time = Time.fromMiliseconds(this.start.toMiliseconds() + this.step.toMiliseconds() * part)
     return time
   }

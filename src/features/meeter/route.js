@@ -3,12 +3,14 @@
 
 import {
   DefaultPage,
+  Calendar,
 } from './';
 
 export default {
-  path: 'meeter',
+  path: '',
   name: 'Meeter',
   childRoutes: [
     { path: '', name: 'Default page', component: DefaultPage, isIndex: true },
+    { path: '/calendar', name: 'Calendar', component: Calendar },
   ],
 };

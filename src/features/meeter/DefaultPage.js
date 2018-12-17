@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import TimeRagePicker from './TimeRangePicker'
-
+import Calendar from './Calendar'
 
 export class DefaultPage extends Component {
   static propTypes = {
@@ -15,6 +15,7 @@ export class DefaultPage extends Component {
   render() {
     return (
       <div className="meeter-default-page">
+        <Calendar/>
         <TimeRagePicker/>
       </div>
     );
