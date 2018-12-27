@@ -8,6 +8,8 @@
 const initialState = {
   dayRanges: {},
   day: 1,
+  sendPending: false,
+  sendError: null,
 };
 
 export default initialState;

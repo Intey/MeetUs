@@ -9,9 +9,11 @@
 import initialState from './initialState';
 import { reducer as daySelectedReducer } from './daySelected';
 import { reducer as rangeUpdateReducer } from './rangeUpdate';
+import { reducer as sendReducer } from './send';
 const reducers = [
   daySelectedReducer,
   rangeUpdateReducer,
+  sendReducer,
 ];
 
 export default function reducer(state = initialState, action) {

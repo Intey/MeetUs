@@ -11,12 +11,16 @@ export class DefaultPage extends Component {
     meeter: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
   };
-
+  send = () => {
+    //TODO: convert storage to payload
+    this.props.actions.send();
+  }
   render() {
     return (
       <div className="meeter-default-page">
         <Calendar/>
         <TimeRagePicker/>
+        <button onClick={this.send}>Готово!</button>
       </div>
     );
   }

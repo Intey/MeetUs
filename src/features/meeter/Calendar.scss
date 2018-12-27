@@ -1,14 +1,36 @@
 @import '../../styles/mixins';
 
 .meeter-calendar {
+  margin: 1em;
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-columns: repeat(7, auto);
+  grid-template-columns: repeat(7, 7.5em);
   grid-template-rows: repeat(5, auto);
+  grid-column-gap: .5em;
+  grid-row-gap: .5em;
 }
 
 .calendar-day {
   border: 1px solid gray;
   min-height: 5em;
+  padding: .5em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .calendar-day__day-number {
+    // align start
+  }
+  .calendar-day__time-range {
+    // center
+  }
+  .calendar-day--with-range {
+    background-color: #bbffbb;
+  }
 }
+
+.current {
+    background-color: lightgray;
+}
+
+
