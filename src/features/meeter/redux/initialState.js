@@ -5,6 +5,11 @@
 // a quick view about what data is used for the feature, at any time.
 
 // NOTE: initialState constant is necessary so that Rekit could auto add initial state when creating async actions.
+
+// each item in dayRanges is a key of int, and object:
+// {
+//   begin: Time, end: Time
+// }
 const initialState = {
   dayRanges: {},
   day: 1,

@@ -12,8 +12,17 @@ export class DefaultPage extends Component {
     actions: PropTypes.object.isRequired,
   };
   send = () => {
-    //TODO: convert storage to payload
-    this.props.actions.send();
+    let payload = []
+    const ranges = this.props.meeter.dayRanges;
+    for (let dayNum in ranges) {
+      const {begin, end} = ranges[dayNum];
+      payload.push({
+        date: `2018-12-${dayNum}`,
+        timeRange: `${begin.toString()} - ${end.toString()}`
+      })
+    }
+
+    this.props.actions.send(1, payload);
   }
   render() {
     return (

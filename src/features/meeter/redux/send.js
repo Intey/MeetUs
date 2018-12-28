@@ -8,7 +8,7 @@ import { post } from '../../../api';
 
 // Rekit uses redux-thunk for async actions by default: https://github.com/gaearon/redux-thunk
 // If you prefer redux-saga, you can use rekit-plugin-redux-saga: https://github.com/supnate/rekit-plugin-redux-saga
-export function send(args = {}) {
+export function send(userId, meets = []) {
   return dispatch => {
     // optionally you can have getState as the second argument
     dispatch({
@@ -23,19 +23,7 @@ export function send(args = {}) {
       // doRequest is a placeholder Promise. You should replace it with your own logic.
       // See the real-word example at:  https://github.com/supnate/rekit/blob/master/src/features/home/redux/fetchRedditReactjsList.js
       // args.error here is only for test coverage purpose.
-      const doRequest = post('http://localhost:8000/api/users/1/meets/', {
-        meets: [
-          { date: '2018-11-12',
-            timeRange: '18:00 - 22:00'
-          },
-          { date: '2018-11-11',
-            timeRange: '15:00 - 18:00'
-          },
-          { date: '2018-11-12',
-            timeRange: '20:00 - 23:00'
-          },
-        ]
-      });
+      const doRequest = post(`http://localhost:8000/api/users/${userId}/meets/`, { meets });
     doRequest.then(res => res.json()).then(
         res => {
           dispatch({
