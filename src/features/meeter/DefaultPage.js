@@ -16,9 +16,10 @@ export class DefaultPage extends Component {
     const ranges = this.props.meeter.dayRanges;
     for (let dayNum in ranges) {
       const {begin, end} = ranges[dayNum];
+      const dayStr = dayNum <= 9 ? `0${dayNum}`: `${dayNum}`;
       payload.push({
-        date: `2018-12-${dayNum}`,
-        timeRange: `${begin.toString()} - ${end.toString()}`
+        date: `2018-12-${dayStr}`,
+        timeRange: `${begin.toString()}-${end.toString()}`
       })
     }
 
